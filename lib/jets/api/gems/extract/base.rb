@@ -9,7 +9,7 @@ module Jets::Api::Gems::Extract
       @name = name
       @options = options
       ruby_folder = Jets::Api::Gems.ruby_folder
-      @downloads_root = options[:downloads_root] || "/tmp/jets/#{Jets.config.project_name}/jets-api/#{ruby_folder}"
+      @downloads_root = options[:downloads_root] || "/tmp/jets/#{Jets.project_name}/jets-api/#{ruby_folder}"
     end
 
     def clean_downloads(folder)

@@ -34,7 +34,7 @@ module Jets::Api
     def prompt
       puts <<~EOL
         You are about to configure your #{pretty_path(@config_path)}
-        You can get a token from pro.rubyonjets.com
+        You can get a token from www.rubyonjets.com
       EOL
       print "Please provide your token: "
       $stdin.gets.strip
@@ -43,13 +43,12 @@ module Jets::Api
     # interface method: do not remove
     def update_token(token=nil)
       token ||= prompt
-      write(token: token) # specify keys to allow
+      write(key: token) # specify keys to allow
     end
 
     def write(values={})
       data = load
       data.merge!(values.deep_stringify_keys)
-      data.delete('key') if data.key?('key') # remove legacy key that used to store token
       FileUtils.mkdir_p(File.dirname(@config_path))
       IO.write(@config_path, YAML.dump(data))
       puts "Updated #{pretty_path(@config_path)}"

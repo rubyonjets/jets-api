@@ -16,13 +16,13 @@ module Jets::Api
         for unlimited gem download requests. Open Source projects may also qualify
         for a free unlimited plan. More info:
 
-          https://pro.rubyonjets.com/rate-limits
+          https://www.rubyonjets.com/rate-limits
 
         Reporting gems to Jets Api also allows it to build new gems typically
         within a few minutes. So if you run into missing gems, you can try deploying
         again after a few minutes. Non-reported gems may take several days or longer.
         Jets Api only collects the info it needs to run the service.
-        More info: https://pro.rubyonjets.com/privacy
+        More info: https://www.rubyonjets.com/privacy
         This message will only appear once on this machine.
 
         You can also automatically skip this message by setting:

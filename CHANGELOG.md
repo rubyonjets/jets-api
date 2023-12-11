@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project *tries* to adhere to [Semantic Versioning](http://semver.org/), even before v1.0.
 
+## [0.1.4] - 2023-12-11
+- stack delete
+
 ## [0.1.3] - 2023-12-11
 - [#1](https://github.com/rubyonjets/jets-api/pull/1) 2xx and 4xx responses are processable
 

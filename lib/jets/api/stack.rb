@@ -10,6 +10,11 @@ module Jets::Api
         params = global_params.merge(params)
         api.get("stacks/#{id}", params)
       end
+
+      def delete(id, params={})
+        params = global_params.merge(params)
+        api.delete("stacks/#{id}", params)
+      end
     end
   end
 end

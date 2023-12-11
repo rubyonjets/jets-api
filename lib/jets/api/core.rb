@@ -66,10 +66,11 @@ module Jets::Api
       end
     end
 
-    # Note: 422 is Unprocessable Entity. This means an invalid data payload was sent.
-    # We want that to error and raise
+    # 422 Unprocessable Entity: Server understands the content type of the request entity, and
+    # the syntax of the request entity is correct, but it was unable to process the contained
+    # instructions.
     def processable?(http_code)
-      http_code =~ /^20/ || http_code =~ /^40/
+      http_code =~ /^2/ || http_code =~ /^4/
     end
 
     def http

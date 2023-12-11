@@ -73,7 +73,7 @@ To remedy this, you can:
 <% end -%>
 
 Compiled gems usually take some time to figure out how to build as they each depend on different libraries and packages.
-More info: http://rubyonjets.com/docs/jets-pro/
+More info: https://docs.rubyonjets.com/docs/pro/
 
 EOL
       erb = ERB.new(template, trim_mode: '-') # trim mode https://stackoverflow.com/questions/4632879/erb-template-removing-the-trailing-line

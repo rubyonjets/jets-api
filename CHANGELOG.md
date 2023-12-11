@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project *tries* to adhere to [Semantic Versioning](http://semver.org/), even before v1.0.
 
+## [0.1.5] - 2023-12-11
+- update jets docs link
+
 ## [0.1.4] - 2023-12-11
 - stack delete
 

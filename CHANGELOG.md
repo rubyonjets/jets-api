@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project *tries* to adhere to [Semantic Versioning](http://semver.org/), even before v1.0.
 
+## [0.2.0] - 2024-01-09
+- [#2](https://github.com/rubyonjets/jets-api/pull/2) improve gem check with arm aarch64-linux
+
 ## [0.1.5] - 2023-12-11
 - update jets docs link
 

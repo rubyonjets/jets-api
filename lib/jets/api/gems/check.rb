@@ -142,20 +142,22 @@ EOL
       end
     end
 
-    # note 2.7.0/gems vs 2.7.0/extensions
+    # note 3.2.0/gems vs 3.2.0/extensions
     #
-    #   /tmp/jets/demo/stage/opt/ruby/gems/2.7.0/gems/nokogiri-1.11.1-x86_64-darwin/
-    #   /tmp/jets/demo/stage/opt/ruby/gems/2.7.0/extensions/x86_64-linux/2.7.0/
+    #   /tmp/jets/demo/stage/opt/ruby/gems/3.2.0/gems/nokogiri-1.16.0-x86_64-darwin/
+    #   /tmp/jets/demo/stage/opt/ruby/gems/3.2.0/extensions/x86_64-linux/3.2.0/
     #
     # Also the platform is appended to the gem folder now
     #
-    #   /tmp/jets/demo/stage/opt/ruby/gems/2.7.0/gems/nokogiri-1.11.1-x86_64-darwin
-    #   /tmp/jets/demo/stage/opt/ruby/gems/2.7.0/gems/nokogiri-1.11.1-x86_64-linux
+    #   /tmp/jets/demo/stage/opt/ruby/gems/3.2.0/gems/nokogiri-1.16.0-x86_64-darwin
+    #   /tmp/jets/demo/stage/opt/ruby/gems/3.2.0/gems/nokogiri-1.16.0-x86_64-linux
+    #   /tmp/jets/demo/stage/opt/ruby/gems/3.2.0/gems/nokogiri-1.16.0-arm64-darwin20
+    #   /tmp/jets/demo/stage/opt/ruby/gems/3.2.0/gems/nokogiri-1.16.0-aarch64-linux
     #
     # On new 2021 macbook with m1 chip: the gems are being saved in a folder like so:
     #   nokogiri-1.12.5-arm64-darwin
     # The GEM_REGEXP accounts for this case.
-    GEM_REGEXP = /-(arm|x)\d+.*-(darwin|linux)/
+    GEM_REGEXP = /-(arm|x|aarch)\d+.*-(darwin|linux)/
     def other_compiled_gems
       paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{Jets::Api::Gems.ruby_folder}/gems/*{-darwin,-linux}")
       paths.map { |p| File.basename(p).sub(GEM_REGEXP,'') }

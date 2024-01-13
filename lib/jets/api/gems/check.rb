@@ -22,7 +22,7 @@ class Jets::Api::Gems
     def run(exit_early: false)
       puts "Checking project for compiled gems..."
       compiled_gems.each do |gem_name|
-        puts "Checking #{gem_name}..." if @options[:verbose]
+        puts "Checking #{gem_name}..." # if @options[:verbose]
         exist = Jets::Api::Gems::Exist.new
         data = exist.check(gem_name)
         @missing_gems << data unless data["exist"]
@@ -136,8 +136,11 @@ EOL
         #     jets gems:check
         #
         gems = gemspec_compiled_gems
+        puts "gemspec_compiled_gems #{gemspec_compiled_gems}"
         gems += other_compiled_gems
+        puts "other_compiled_gems #{other_compiled_gems}"
         gems += registered_compiled_gems
+        puts "registered_compiled_gems #{registered_compiled_gems}"
         gems.uniq
       end
     end
@@ -159,20 +162,30 @@ EOL
     # The GEM_REGEXP accounts for this case.
     GEM_REGEXP = /-(arm|x|aarch)\d+.*-(darwin|linux)/
     def other_compiled_gems
-      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{Jets::Api::Gems.ruby_folder}/gems/*{-darwin,-linux}")
-      paths.map { |p| File.basename(p).sub(GEM_REGEXP,'') }
+      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{ruby_folder}/gems/*{-darwin,-linux}")
+      gems = paths.map { |p| File.basename(p).sub(GEM_REGEXP,'') }
+
+      # new versions of date gem needed this
+      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{ruby_folder}/extensions/*{-darwin,-linux}/#{ruby_folder}/*")
+      gems += paths.map { |p| File.basename(p).sub(GEM_REGEXP,'') }
+
+      gems
     end
 
     def registered_compiled_gems
       registered = Jets::Api::Gems::Registered.new
       registered_gems = registered.all # no version numbers in this list
 
-      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{Jets::Api::Gems.ruby_folder}/gems/*")
+      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{ruby_folder}/gems/*")
       project_gems = paths.map { |p| File.basename(p).sub(GEM_REGEXP,'') }
       project_gems.select do |name|
         name_only = name.sub(/-\d+\.\d+\.\d+.*/,'')
         registered_gems.include?(name_only)
       end
+    end
+
+    def ruby_folder
+      Jets::Api::Gems.ruby_folder
     end
 
     # Use precompiled gem because the gem could have development header shared
@@ -211,13 +224,13 @@ EOL
     # Thanks: https://gist.github.com/aelesbao/1414b169a79162b1d795 and
     #   https://stackoverflow.com/questions/5165950/how-do-i-get-a-list-of-gems-that-are-installed-that-have-native-extensions
     def gemspec_compiled_gems
-      specs = Gem::Specification.each.select { |spec| spec.extensions.any?  }
+      specs = Gem::Specification.each.select { |spec| spec.extensions.any? }
       specs.reject! { |spec| weird_gem?(spec.name) }
       specs.map(&:full_name)
     end
 
     # Filter out the weird special case gems that bundler deletes?
-    # Apibably to fix some bug.
+    # Probably to fix some bug.
     #
     #   $ bundle show json
     #   The gem json has been deleted. It was installed at:

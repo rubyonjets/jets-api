@@ -136,11 +136,8 @@ EOL
         #     jets gems:check
         #
         gems = gemspec_compiled_gems
-        puts "gemspec_compiled_gems #{gemspec_compiled_gems}"
         gems += other_compiled_gems
-        puts "other_compiled_gems #{other_compiled_gems}"
         gems += registered_compiled_gems
-        puts "registered_compiled_gems #{registered_compiled_gems}"
         gems.uniq
       end
     end

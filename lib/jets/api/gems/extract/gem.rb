@@ -9,7 +9,7 @@ module Jets::Api::Gems::Extract
       say "Will download and extract gem: #{full_gem_name}"
       clean_downloads(:gems) if @options[:clean]
       zipfile_path = download_gem
-      remove_current_gem if Jets.config.pro.clean || Jets.config.gems.clean
+      # remove_current_gem if Jets.config.pro.clean || Jets.config.gems.clean
       unzip_file(zipfile_path)
       say("Gem #{full_gem_name} unpacked at #{project_root}")
     end

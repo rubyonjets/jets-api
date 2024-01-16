@@ -11,7 +11,7 @@ module Jets::Api
     end
 
     def token
-      data['token'] || data['key'] # keep key for backwards compatibility
+      ENV['JETS_API_TOKEN'] || data['token'] || data['key'] # keep key for backwards compatibility
     end
 
     def data

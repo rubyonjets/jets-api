@@ -52,16 +52,10 @@ module Jets::Api
 
     def load_json(url, res)
       uri = URI(url)
-      if ENV['JETS_API_DEBUG']
-        puts "res.code #{res.code}"
-        puts "res.body #{res.body}"
-      end
       if processable?(res.code)
         JSON.load(res.body)
       else
         puts "Error: Non-successful http response status code: #{res.code}"
-        puts "headers: #{res.each_header.to_h.inspect}"
-        puts "Jets API #{url}" if ENV['JETS_API_DEBUG']
         raise "Jets API called failed: #{uri.host}"
       end
     end
@@ -78,6 +72,7 @@ module Jets::Api
       http = Net::HTTP.new(uri.host, uri.port)
       http.open_timeout = http.read_timeout = 30
       http.use_ssl = true if uri.scheme == 'https'
+      http.set_debug_output($stdout) if ENV['JETS_API_DEBUG']
       http
     end
     memoize :http

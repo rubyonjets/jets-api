@@ -3,7 +3,10 @@ module Jets::Api
     class << self
       def create(params={})
         params = global_params.merge(params)
-        api.post("sigs", params)
+        resp = api.post("sigs", params)
+        puts "DEBUG resp:"
+        pp resp
+        resp
       end
 
       def update(id, params={})

@@ -34,6 +34,7 @@ module Jets::Api
       set_headers!(req)
       if [Net::HTTP::Delete, Net::HTTP::Patch, Net::HTTP::Post, Net::HTTP::Put].include?(klass)
         text = JSON.dump(data)
+        puts "Jets API url #{url}"
         puts "POST data:"
         puts JSON.pretty_generate(data)
         req.body = text

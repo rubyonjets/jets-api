@@ -34,15 +34,17 @@ module Jets::Api
       set_headers!(req)
       if [Net::HTTP::Delete, Net::HTTP::Patch, Net::HTTP::Post, Net::HTTP::Put].include?(klass)
         text = JSON.dump(data)
+        puts "POST data:"
+        puts JSON.pretty_generate(data)
         req.body = text
         req.content_length = text.bytesize
+        req.content_type = 'application/json'
       end
       req
     end
 
     def set_headers!(req)
       req['Authorization'] = token if token
-      req['Content-Type'] = "application/vnd.api+json"
       req['x-account'] = account if account
       req['x-session-token'] = session_token if session_token
     end

@@ -31,7 +31,16 @@ module Jets
     module_function :token
 
     def endpoint
-      ENV['JETS_API'] || 'https://api.rubyonjets.com/v1'
+      return ENV['JETS_API'] if ENV['JETS_API']
+      # Avoid production calls for now
+      return "https://localhost:8881/v2"
+
+      major = Jets::VERSION.split('.').first.to_i
+      if major >= 6
+        'https://api.rubyonjets.com/v2'
+      else
+        'https://api.rubyonjets.com/v1'
+      end
     end
     module_function :endpoint
   end

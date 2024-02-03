@@ -42,8 +42,14 @@ module Jets::Api
 
     def set_headers!(req)
       req['Authorization'] = token if token
-      req['x-account'] = account if account
       req['Content-Type'] = "application/vnd.api+json"
+      req['x-account'] = account if account
+      req['x-session-token'] = session_token if session_token
+    end
+
+    def session_token
+      # TODO: support session token
+      ENV['JETS_SIG']
     end
 
     def token

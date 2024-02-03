@@ -33,7 +33,7 @@ module Jets
     def endpoint
       return ENV['JETS_API'] if ENV['JETS_API']
       # Avoid production calls for now
-      return "https://localhost:8881/v2"
+      return "http://localhost:8881/v2"
 
       major = Jets::VERSION.split('.').first.to_i
       if major >= 6

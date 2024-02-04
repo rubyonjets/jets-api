@@ -47,12 +47,15 @@ module Jets::Api
     def set_headers!(req)
       req['Authorization'] = token if token
       req['x-account'] = account if account
-      req['x-session-token'] = session_token if session_token
+      req['x-session'] = session if session
     end
 
-    def session_token
-      # TODO: support session token
-      ENV['JETS_SIG']
+    def session
+      session_path = "#{ENV['HOME']}/.jets/session.yml"
+      if File.exist?(session_path)
+        data = YAML.load_file(session_path)
+        data['secret_token']
+      end
     end
 
     def token

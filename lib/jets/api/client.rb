@@ -7,7 +7,6 @@ module Jets::Api
     include Jets::Api::Logging
     @@max_retries = 3
 
-    # Always translate raw json response to ruby Hash
     def execute_request(klass, path, data={}, headers={})
       url = url(path)
       req = build_request(klass, url, data, headers)
@@ -15,13 +14,16 @@ module Jets::Api
 
       resp = Jets::Api::Response.new(http_resp)
 
-      # log.info "resp.data:"
-      # puts JSON.pretty_generate(resp.data)
+      if ENV['JETS_DEBUG_API']
+        puts "API Response for url #{url}"
+        puts JSON.pretty_generate(resp.data) rescue nil
+      end
 
       if handle_as_error?(resp.http_status)
         handle_error_response!(resp)
       end
 
+      # Always translate Json Response to Ruby Hash
       resp.data # JSON.parse(@http_resp.body) => Ruby hash
     end
 
@@ -91,7 +93,7 @@ module Jets::Api
         sleep delay
         retry
       else
-        message = "Unexpected error #{error.class.name} communicating the Jets API. "
+        message = "Unexpected error #{error.class.name} communicating with the Jets API. "
         message += " Request was tried #{retries} times."
         raise Jets::Api::Error::Connection,
               message + "\nNetwork error: #{error.message}"

@@ -1,4 +1,4 @@
-module Jets::Api::Core
+module Jets::Api
   class Response
     attr_reader(
       :http_body,
@@ -17,12 +17,7 @@ module Jets::Api::Core
     def data
       JSON.parse(@http_resp.body, symbolize_names: true)
     rescue JSON::ParserError
-      raise general_api_error(@http_resp)
-    end
-
-    def general_api_error(http_resp)
-      puts "general_api_error CALLED".color(:purple)
-      Jets::Api::Error.new(http_resp)
+      raise Jets::Api::Error, http_resp
     end
   end
 end

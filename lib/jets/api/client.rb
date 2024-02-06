@@ -13,12 +13,63 @@ module Jets::Api
       req = build_request(klass, url, data, headers)
       http_resp = http_request(req)
 
-      resp = Jets::Api::Core::Response.new(http_resp)
+      if handle_as_error?(http_resp.code)
+        handle_error_response!(http_resp)
+      end
+
+      resp = Jets::Api::Response.new(http_resp)
       log.info "resp.data:"
       pp resp.data
       log.info "resp.http_body:"
       log.info JSON.pretty_generate(JSON.load(resp.http_body))
       exit
+    end
+
+    def handle_error_response!(http_resp)
+      begin
+        resp = Jets::Api::Response.new(http_resp)
+        raise Jets::Api::Error, "Indeterminate error" unless resp.data[:error]
+      rescue JSON::ParserError, Jets::Api::Error
+        raise general_api_error(http_resp)
+      end
+
+      error = if resp.data[:error].is_a?(String) # Internal Server Error
+                Jets::Api::Error.new(resp.data[:error], http_status: resp.http_status)
+              else
+                specific_api_error(resp)
+              end
+
+      raise error
+    end
+
+    def general_api_error(http_resp)
+      Jets::Api::Error.new(http_resp.body, http_status: http_resp.code)
+    end
+
+    def specific_api_error(resp)
+      message = resp.data[:error][:message]
+      http_status = resp.http_status
+
+      case resp.http_status
+      when 400, 404
+        Jets::Api::Error::BadRequest.new(message, http_status: http_status)
+      when 401
+        Jets::Api::Error::Unauthorized.new(message, http_status: http_status)
+      when 403
+        Jets::Api::Error::Forbidden.new(message, http_status: http_status)
+      when 422
+        Jets::Api::Error::UnprocessableEntity.new(message, http_status: http_status)
+      when 429
+        Jets::Api::Error::TooManyRequests.new(message, http_status: http_status)
+      when 500
+        Jets::Api::Error::InternalServerError.new(message, http_status: http_status)
+      else
+        Jets::Api::Error.new(message, http_status: http_status)
+      end
+    end
+
+    def handle_as_error?(http_status)
+      http_status.to_i >= 400
     end
 
     def build_request(klass, url, data={}, headers={})

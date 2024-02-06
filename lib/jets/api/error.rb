@@ -14,5 +14,26 @@ module Jets::Api
 
     class Connection < Error
     end
+
+    class BadRequest < Error
+    end
+
+    class Unauthorized < Error
+    end
+
+    class Forbidden < Error
+    end
+
+    class NotFound < Error
+    end
+
+    class TooManyRequests < Error
+    end
+
+    class InternalServerError < Error
+    end
+
+    class ServiceUnavailable < Error
+    end
   end
 end

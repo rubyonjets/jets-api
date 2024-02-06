@@ -1,6 +1,7 @@
 module Jets::Api
   class Response
     attr_reader(
+      :http_resp,
       :http_body,
       :http_headers,
       :http_status,

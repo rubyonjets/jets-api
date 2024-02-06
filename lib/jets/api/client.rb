@@ -13,37 +13,28 @@ module Jets::Api
       req = build_request(klass, url, data, headers)
       http_resp = http_request(req)
 
-      if handle_as_error?(http_resp.code)
-        handle_error_response!(http_resp)
+      resp = Jets::Api::Response.new(http_resp)
+
+      # log.info "resp.data:"
+      # puts JSON.pretty_generate(resp.data)
+
+      if handle_as_error?(resp.http_status)
+        handle_error_response!(resp)
       end
 
-      resp = Jets::Api::Response.new(http_resp)
-      log.info "resp.data:"
-      pp resp.data
-      log.info "resp.http_body:"
-      log.info JSON.pretty_generate(JSON.load(resp.http_body))
-      exit
+      resp.data # JSON.parse(@http_resp.body) => Ruby hash
     end
 
-    def handle_error_response!(http_resp)
-      begin
-        resp = Jets::Api::Response.new(http_resp)
-        raise Jets::Api::Error, "Indeterminate error" unless resp.data[:error]
-      rescue JSON::ParserError, Jets::Api::Error
-        raise general_api_error(http_resp)
-      end
-
-      error = if resp.data[:error].is_a?(String) # Internal Server Error
-                Jets::Api::Error.new(resp.data[:error], http_status: resp.http_status)
+    def handle_error_response!(resp)
+      error = if resp.data[:error].nil?
+                general_api_error("Indeterminate error", resp.http_status)
+              elsif resp.data[:error].is_a?(String) # Internal Server Error
+                general_api_error(resp.data[:error], resp.http_status)
               else
                 specific_api_error(resp)
               end
 
       raise error
-    end
-
-    def general_api_error(http_resp)
-      Jets::Api::Error.new(http_resp.body, http_status: http_resp.code)
     end
 
     def specific_api_error(resp)
@@ -64,12 +55,16 @@ module Jets::Api
       when 500
         Jets::Api::Error::InternalServerError.new(message, http_status: http_status)
       else
-        Jets::Api::Error.new(message, http_status: http_status)
+        general_api_error(message, http_status)
       end
     end
 
+    def general_api_error(message, http_status)
+      Jets::Api::Error.new(message, http_status: http_status)
+    end
+
     def handle_as_error?(http_status)
-      http_status.to_i >= 400
+      http_status >= 400
     end
 
     def build_request(klass, url, data={}, headers={})

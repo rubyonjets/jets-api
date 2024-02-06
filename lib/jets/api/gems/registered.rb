@@ -5,7 +5,7 @@ class Jets::Api::Gems
     def all
       resp = Jets::Api::Gems.registered
       resp["gems"]
-    rescue Jets::Api::RequestError => e
+    rescue Jets::Api::Error::Connection => e
       puts "WARNING: #{e.class}: #{e.message}"
       []
     end

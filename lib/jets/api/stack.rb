@@ -3,17 +3,17 @@ module Jets::Api
     class << self
       def list(params={})
         params = global_params.merge(params)
-        api.get("stacks", params)
+        api.get("/stacks", params)
       end
 
       def retrieve(id, params={})
         params = global_params.merge(params)
-        api.get("stacks/#{id}", params)
+        api.get("/stacks/#{id}", params)
       end
 
       def delete(id, params={})
         params = global_params.merge(params)
-        api.delete("stacks/#{id}", params)
+        api.delete("/stacks/#{id}", params)
       end
     end
   end

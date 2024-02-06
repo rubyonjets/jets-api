@@ -3,17 +3,17 @@ module Jets::Api
     class << self
       def list(params={})
         params = global_params.merge(params)
-        api.get("releases", params)
+        api.get("/releases", params)
       end
 
       def retrieve(id, params={})
         params = global_params.merge(params)
-        api.get("releases/#{id}", params)
+        api.get("/releases/#{id}", params)
       end
 
       def create(params={})
         params = global_params.merge(params)
-        resp = api.post("releases", params)
+        resp = api.post("/releases", params)
         puts "DEBUG created release: #{resp.inspect}"
         resp
       end

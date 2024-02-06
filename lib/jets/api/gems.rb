@@ -3,22 +3,22 @@ module Jets::Api
     class << self
       def download(params={})
         params = global_params.merge(params)
-        api.post("gems/download", params)
+        api.post("/gems/download", params)
       end
 
       def exist(params={})
         params = global_params.merge(params)
-        api.post("gems/exist", params)
+        api.post("/gems/exist", params)
       end
 
       def report(params={})
         params = global_params.merge(params)
-        api.post("gems/report", params)
+        api.post("/gems/report", params)
       end
 
       def registered(params={})
         params = global_params.merge(params)
-        api.post("gems/registered", params)
+        api.post("/gems/registered", params)
       end
 
       def ruby_folder

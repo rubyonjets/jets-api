@@ -38,10 +38,12 @@ module Jets::Api
         http_status = resp.http_status
 
         case resp.http_status
-        when 400, 404
+        when 400
           BadRequest.new(message, http_status: http_status)
         when 401
           Unauthorized.new(message, http_status: http_status)
+        when 404
+          NotFound.new(message, http_status: http_status)
         when 403
           Forbidden.new(message, http_status: http_status)
         when 422

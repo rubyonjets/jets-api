@@ -13,9 +13,7 @@ module Jets::Api
 
       def create(params={})
         params = global_params.merge(params)
-        resp = api.post("/releases", params)
-        puts "DEBUG created release: #{resp.inspect}"
-        resp
+        api.post("/releases", params)
       end
     end
   end

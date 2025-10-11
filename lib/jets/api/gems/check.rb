@@ -54,10 +54,10 @@ class Jets::Api::Gems
         * Unavailable: <%= missing_gem['gem_name'] -%> Available versions: <%= available.join(' ') %>
         <% end %>
         Your current Jets API endpoint: #{endpoint}
-        
+
         Jets is unable to build a deployment package that will work on AWS Lambda without the required precompiled gems.
         To remedy this, you can:
-        
+
         * Use another gem that does not require compilation.
         * Create your own custom layer with the gem: http://rubyonjets.com/docs/extras/custom-lambda-layers/
         <% if agree.yes? -%>
@@ -71,10 +71,10 @@ class Jets::Api::Gems
         * You can try redeploying again after a few minutes.
         * Non-reported gems may take days or even longer to be built.
         <% end -%>
-        
+
         Compiled gems usually take some time to figure out how to build as they each depend on different libraries and packages.
         More info: https://docs.rubyonjets.com/docs/pro/
-        
+
       EOL
       erb = ERB.new(template, trim_mode: "-") # trim mode https://stackoverflow.com/questions/4632879/erb-template-removing-the-trailing-line
       erb.result(binding)
@@ -157,9 +157,9 @@ class Jets::Api::Gems
     # On new 2021 macbook with m1 chip: the gems are being saved in a folder like so:
     #   nokogiri-1.12.5-arm64-darwin
     # The GEM_REGEXP accounts for this case.
-    GEM_REGEXP = /-(arm|x|aarch)\d+.*-(darwin|linux)/
+    GEM_REGEXP = /-(arm|x|aarch)\d+.*-(darwin|linux)(?:-gnu)?/
     def other_compiled_gems
-      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{Jets::Api::Gems.ruby_folder}/gems/*{-darwin,-linux}")
+      paths = Dir.glob("#{Jets.build_root}/stage/opt/ruby/gems/#{Jets::Api::Gems.ruby_folder}/gems/*{-darwin,-linux}*")
       paths.map { |p| File.basename(p).sub(GEM_REGEXP, "") }
     end
 

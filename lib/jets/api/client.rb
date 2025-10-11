@@ -1,4 +1,4 @@
-require 'open-uri'
+require "open-uri"
 
 module Jets::Api
   class Client

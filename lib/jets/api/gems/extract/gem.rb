@@ -36,7 +36,7 @@ module Jets::Api::Gems::Extract
     end
 
     def gem_name
-      full_gem_name.gsub(VERSION_PATTERN,'') # folder: byebug
+      full_gem_name.gsub(VERSION_PATTERN, "") # folder: byebug
     end
 
     # Downloads and extracts the linux gem into the proper directory.
@@ -53,10 +53,10 @@ module Jets::Api::Gems::Extract
       begin
         @retries ||= 0
         url = gem_url
-        basename = File.basename(url).gsub(/\?.*/,'') # remove query string info
+        basename = File.basename(url).gsub(/\?.*/, "") # remove query string info
         tarball_dest = download_file(url, download_path(basename))
       rescue OpenURI::HTTPError => e
-        url_without_query = url.gsub(/\?.*/,'')
+        url_without_query = url.gsub(/\?.*/, "")
         puts "Error downloading #{url_without_query}"
         @retries += 1
         if @retries < 3
@@ -104,10 +104,10 @@ module Jets::Api::Gems::Extract
     def remove_current_gem
       say "Removing current #{full_gem_name} gem installation:"
       gem_dirs = Dir.glob("#{project_root}/**/*").select do |path|
-                  File.directory?(path) &&
-                  path =~ %r{vendor/gems} &&
-                  File.basename(path) == full_gem_name
-                end
+        File.directory?(path) &&
+          path =~ %r{vendor/gems} &&
+          File.basename(path) == full_gem_name
+      end
       gem_dirs.each do |dir|
         say "  rm -rf #{dir}"
         FileUtils.rm_rf(dir)

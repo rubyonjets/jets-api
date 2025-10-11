@@ -7,7 +7,7 @@ module Jets::Api
     @@max_retries = 3
 
     # Always translate raw json response to ruby Hash
-    def request(klass, path, data={})
+    def request(klass, path, data = {})
       raw_response = data.delete(:raw_response)
       url = url(path)
       req = build_request(klass, url, data)
@@ -19,7 +19,7 @@ module Jets::Api
         @retries += 1
         if @retries <= @@max_retries
           delay = 2**@retries
-          puts "Error: #{e.class} #{e.message} retrying after #{delay} seconds..." if ENV['JETS_API_DEBUG']
+          puts "Error: #{e.class} #{e.message} retrying after #{delay} seconds..." if ENV["JETS_API_DEBUG"]
           sleep delay
           retry
         else
@@ -29,7 +29,7 @@ module Jets::Api
       end
     end
 
-    def build_request(klass, url, data={})
+    def build_request(klass, url, data = {})
       req = klass.new(url) # url includes query string and uri.path does not, must used url
       set_headers!(req)
       if [Net::HTTP::Delete, Net::HTTP::Patch, Net::HTTP::Post, Net::HTTP::Put].include?(klass)
@@ -41,9 +41,9 @@ module Jets::Api
     end
 
     def set_headers!(req)
-      req['Authorization'] = token if token
-      req['x-account'] = account if account
-      req['Content-Type'] = "application/vnd.api+json"
+      req["Authorization"] = token if token
+      req["x-account"] = account if account
+      req["Content-Type"] = "application/vnd.api+json"
     end
 
     def token
@@ -52,7 +52,7 @@ module Jets::Api
 
     def load_json(url, res)
       uri = URI(url)
-      if ENV['JETS_API_DEBUG']
+      if ENV["JETS_API_DEBUG"]
         puts "res.code #{res.code}"
         puts "res.body #{res.body}"
       end
@@ -61,7 +61,7 @@ module Jets::Api
       else
         puts "Error: Non-successful http response status code: #{res.code}"
         puts "headers: #{res.each_header.to_h.inspect}"
-        puts "Jets API #{url}" if ENV['JETS_API_DEBUG']
+        puts "Jets API #{url}" if ENV["JETS_API_DEBUG"]
         raise "Jets API called failed: #{uri.host}"
       end
     end
@@ -77,7 +77,7 @@ module Jets::Api
       uri = URI(endpoint)
       http = Net::HTTP.new(uri.host, uri.port)
       http.open_timeout = http.read_timeout = 30
-      http.use_ssl = true if uri.scheme == 'https'
+      http.use_ssl = true if uri.scheme == "https"
       http
     end
     memoize :http
@@ -87,31 +87,33 @@ module Jets::Api
       "#{endpoint}/#{path}"
     end
 
-    def get(path, query={})
+    def get(path, query = {})
       path = path_with_query(path, query)
       request(Net::HTTP::Get, path, raw_response: query[:raw_response])
     end
 
-    def path_with_query(path, query={})
+    def path_with_query(path, query = {})
       return path if query.empty?
       separator = path.include?("?") ? "&" : "?"
       "#{path}#{separator}#{query.to_query}"
     end
 
-    def post(path, data={})
+    def post(path, data = {})
       request(Net::HTTP::Post, path, data)
     end
 
-    def patch(path, data={})
+    def patch(path, data = {})
       request(Net::HTTP::Patch, path, data)
     end
 
-    def delete(path, data={})
+    def delete(path, data = {})
       request(Net::HTTP::Delete, path, data)
     end
 
     def account
-      sts.get_caller_identity.account rescue nil
+      sts.get_caller_identity.account
+    rescue
+      nil
     end
     memoize :account
 

@@ -5,7 +5,7 @@ module Jets::Api::Gems::Extract
     class NotFound < RuntimeError; end
 
     attr_reader :project_root
-    def initialize(name, options={})
+    def initialize(name, options = {})
       @name = name
       @options = options
       ruby_folder = Jets::Api::Gems.ruby_folder
@@ -35,17 +35,17 @@ module Jets::Api::Gems::Extract
 
     # Returns the dest path
     def download_file(url, dest)
-      if File.exist?(dest) && ENV['JETS_API_FORCE_DOWNLOAD'].blank?
+      if File.exist?(dest) && ENV["JETS_API_FORCE_DOWNLOAD"].blank?
         say "File already downloaded #{dest}"
         return dest
       end
 
       say "Downloading..."
-      downloaded = URI.open(url, 'rb') { |read_file| read_file.read }
+      downloaded = URI.open(url, "rb") { |read_file| read_file.read }
 
       FileUtils.mkdir_p(File.dirname(dest)) # ensure parent folder exists
 
-      File.open(dest, 'wb') { |saved_file| saved_file.write(downloaded) }
+      File.binwrite(dest, downloaded)
 
       dest
     end
@@ -56,7 +56,7 @@ module Jets::Api::Gems::Extract
       @@log_level = val
     end
 
-    def say(message, level=:info)
+    def say(message, level = :info)
       enabled = @@log_level == :debug || level == :debug
       puts(message) if enabled
     end

@@ -5,13 +5,13 @@ module Jets::Api
     include Singleton
     extend Memoist
 
-    def initialize(options={})
+    def initialize(options = {})
       @options = options
-      @config_path = "#{ENV['HOME']}/.jets/config.yml"
+      @config_path = "#{ENV["HOME"]}/.jets/config.yml"
     end
 
     def token
-      data['token'] || data['key'] # keep key for backwards compatibility
+      data["token"] || data["key"] # keep key for backwards compatibility
     end
 
     def data
@@ -41,12 +41,12 @@ module Jets::Api
     end
 
     # interface method: do not remove
-    def update_token(token=nil)
+    def update_token(token = nil)
       token ||= prompt
       write(key: token) # specify keys to allow
     end
 
-    def write(values={})
+    def write(values = {})
       data = load
       data.merge!(values.deep_stringify_keys)
       FileUtils.mkdir_p(File.dirname(@config_path))
@@ -55,7 +55,7 @@ module Jets::Api
     end
 
     def pretty_path(path)
-      path.sub(ENV['HOME'], '~')
+      path.sub(ENV["HOME"], "~")
     end
   end
 end

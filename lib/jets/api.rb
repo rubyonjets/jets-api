@@ -31,7 +31,7 @@ module Jets
     module_function :token
 
     def endpoint
-      ENV['JETS_API'] || Jets.config.pro.endpoint || 'https://api.rubyonjets.com/v1'
+      ENV["JETS_API"] || Jets.config.pro.endpoint || "https://api.rubyonjets.com/v1"
     end
     module_function :endpoint
   end

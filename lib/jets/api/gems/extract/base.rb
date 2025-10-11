@@ -50,14 +50,13 @@ module Jets::Api::Gems::Extract
       dest
     end
 
-    @@log_level = :info # default level is :info
-    # @@log_level = :debug # uncomment to debug
+    @@log_level = ENV["JETS_API_LOG_LEVEL"] || "info" # default level is :info
     def log_level=(val)
       @@log_level = val
     end
 
-    def say(message, level = :info)
-      enabled = @@log_level == :debug || level == :debug
+    def say(message, level = "info")
+      enabled = @@log_level == "debug" || level == "debug"
       puts(message) if enabled
     end
   end

@@ -44,38 +44,36 @@ module Jets::Api::Gems::Extract
         gem_groups[base_name] << {dir: dir, name: name}
       end
 
-      # For each gem group, keep only x86_64-linux variants
-      gem_groups.each do |base_name, variants|
-        next if variants.size <= 1 # No cleanup needed if only one variant
+      # For each gem group, clean up platform variants
+      gem_groups.each { |base_name, variants| cleanup_gem_variants(base_name, variants, specs_dir) }
+    end
 
-        say "Found #{variants.size} platform variants for #{base_name}:"
-        variants.each { |v| say "  - #{v[:name]}" }
+    # Clean up platform variants for a specific gem group
+    def cleanup_gem_variants(base_name, variants, specs_dir)
+      return if variants.size <= 1 # No cleanup needed if only one variant
 
-        # Find x86_64-linux variants (preferred for AWS Lambda)
-        x86_64_variants = variants.select { |v| v[:name].include?("-x86_64-linux-gnu") || v[:name].include?("-x86_64-linux") }
+      say "Found #{variants.size} platform variants for #{base_name}:"
+      variants.each { |v| say "  - #{v[:name]}" }
 
-        if x86_64_variants.any?
-          # Keep x86_64-linux variants, remove others
-          keep_variants = x86_64_variants
-          remove_variants = variants - x86_64_variants
-        else
-          # If no x86_64-linux variants, keep the first one alphabetically
-          keep_variants = [variants.min_by { |v| v[:name] }]
-          remove_variants = variants - keep_variants
-        end
+      # Always favor base gem variants (without platform suffix) - these are from Jets API
+      # Remove all platform-specific variants
+      base_variants = variants.select { |v| !v[:name].match(/-[^-]+-[^-]+$/) }
+      platform_variants = variants - base_variants
 
-        say "Keeping: #{keep_variants.map { |v| v[:name] }.join(", ")}"
-        say "Removing: #{remove_variants.map { |v| v[:name] }.join(", ")}"
+      keep_variants = base_variants.any? ? base_variants : variants
+      remove_variants = platform_variants
 
-        # Remove incompatible variants
-        remove_variants.each do |variant|
-          say "Removing incompatible variant: #{variant[:name]}"
-          FileUtils.rm_rf(variant[:dir])
+      say "Keeping: #{keep_variants.map { |v| v[:name] }.join(", ")}"
+      say "Removing: #{remove_variants.map { |v| v[:name] }.join(", ")}"
 
-          # Also remove the corresponding gemspec
-          gemspec_path = "#{specs_dir}/#{variant[:name]}.gemspec"
-          FileUtils.rm_f(gemspec_path) if File.exist?(gemspec_path)
-        end
+      # Remove incompatible variants
+      remove_variants.each do |variant|
+        say "Removing incompatible variant: #{variant[:name]}"
+        FileUtils.rm_rf(variant[:dir])
+
+        # Also remove the corresponding gemspec
+        gemspec_path = "#{specs_dir}/#{variant[:name]}.gemspec"
+        FileUtils.rm_f(gemspec_path) if File.exist?(gemspec_path)
       end
     end
 

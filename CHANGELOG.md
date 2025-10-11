@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project *tries* to adhere to [Semantic Versioning](http://semver.org/), even before v1.0.
 
+## [0.2.1] - 2025-10-11
+- fix gem detection ffi - gnu suffix and clean up incompatible platform variants
+- standardrb
+
 ## [0.2.0] - 2024-01-09
 - [#2](https://github.com/rubyonjets/jets-api/pull/2) improve gem check with arm aarch64-linux
 

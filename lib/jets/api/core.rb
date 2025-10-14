@@ -77,7 +77,14 @@ module Jets::Api
       uri = URI(endpoint)
       http = Net::HTTP.new(uri.host, uri.port)
       http.open_timeout = http.read_timeout = 30
-      http.use_ssl = true if uri.scheme == "https"
+      if uri.scheme == "https"
+        http.use_ssl = true
+        # Fix for Ruby 3.4+ where SSL context is frozen by default
+        # Create a new SSL context to avoid frozen object modification
+        if http.respond_to?(:ssl_context=)
+          http.ssl_context = OpenSSL::SSL::SSLContext.new
+        end
+      end
       http
     end
     memoize :http

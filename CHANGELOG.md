@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project *tries* to adhere to [Semantic Versioning](http://semver.org/), even before v1.0.
 
+## [0.2.3] - 2025-10-16
+- handle http ssl true for newer ruby versions
+- remove report without threads for http ssl true thread safety
+
 ## [0.2.2] - 2025-10-11
 - fix clean up gem variants
 

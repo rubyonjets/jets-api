@@ -212,7 +212,7 @@ class Jets::Api::Gems
     #   https://stackoverflow.com/questions/5165950/how-do-i-get-a-list-of-gems-that-are-installed-that-have-native-extensions
     def gemspec_compiled_gems
       specs = Gem::Specification.each.select { |spec| spec.extensions.any? }
-      specs.reject! { |spec| weird_gem?(spec.name) }
+      # specs.reject! { |spec| weird_gem?(spec.name) }
       specs.map(&:full_name)
     end
 
